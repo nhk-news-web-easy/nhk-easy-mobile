@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Startup Name Generator',
+      title: 'NHK NEWS EASY',
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
@@ -26,6 +26,7 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final Set<WordPair> _saved = <WordPair>{};
   final _biggerFont = const TextStyle(fontSize: 18.0);
+  final _news = List<News>();
   Future<List<News>> _newsListFuture;
 
   Widget _buildSuggestions() {
@@ -40,6 +41,23 @@ class RandomWordsState extends State<RandomWords> {
           }
           return _buildRow(_suggestions[index]);
         });
+  }
+
+  Widget _buildNewsList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemBuilder: (context, i) {
+        if (i < _news.length) {
+          return _buildNews(_news[i]);
+        } else {
+          return new ListTile(title: Text("News"));
+        }
+      },
+    );
+  }
+
+  Widget _buildNews(News news) {
+    return ListTile(title: Text(news.title));
   }
 
   Widget _buildRow(WordPair pair) {
@@ -69,7 +87,7 @@ class RandomWordsState extends State<RandomWords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
+        title: Text('NHK NEWS EASY'),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],
@@ -79,7 +97,9 @@ class RandomWordsState extends State<RandomWords> {
               future: _newsListFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text("News");
+                  _news.addAll(snapshot.data);
+
+                  return _buildNewsList();
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
@@ -131,7 +151,8 @@ class RandomWordsState extends State<RandomWords> {
         "https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z");
 
     if (response.statusCode == 200) {
-      var newsList = List.of(json.decode(response.body));
+      var decoder = Utf8Decoder();
+      var newsList = List.of(json.decode(decoder.convert(response.bodyBytes)));
 
       return newsList.map((news) => News.fromJson(news)).toList();
     } else {
