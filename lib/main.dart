@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'model/news.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,6 +26,7 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final Set<WordPair> _saved = <WordPair>{};
   final _biggerFont = const TextStyle(fontSize: 18.0);
+  Future<List<News>> _newsListFuture;
 
   Widget _buildSuggestions() {
     return ListView.builder(
@@ -67,7 +74,18 @@ class RandomWordsState extends State<RandomWords> {
           IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],
       ),
-      body: _buildSuggestions(),
+      body: Center(
+          child: FutureBuilder<List<News>>(
+              future: _newsListFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text("News");
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+
+                return CircularProgressIndicator();
+              })),
     );
   }
 
@@ -99,6 +117,26 @@ class RandomWordsState extends State<RandomWords> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _newsListFuture = _fetchNews();
+  }
+
+  Future<List<News>> _fetchNews() async {
+    final response = await http.get(
+        "https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z");
+
+    if (response.statusCode == 200) {
+      var newsList = List.of(json.decode(response.body));
+
+      return newsList.map((news) => News.fromJson(news)).toList();
+    } else {
+      throw Exception("Failed to fetch news");
+    }
   }
 }
 
