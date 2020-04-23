@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,41 +16,38 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
-      home: RandomWords(),
+      home: NewsList(),
     );
   }
 }
 
-class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final Set<WordPair> _saved = <WordPair>{};
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final _news = List<News>();
-  Future<List<News>> _newsListFuture;
+class NewsListState extends State<NewsList> {
+  final _newsList = List<News>();
+  bool _isLoading = false;
+  bool _hasMore = true;
 
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return Divider();
-
-          final index = i ~/ 2;
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
-          }
-          return _buildRow(_suggestions[index]);
-        });
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('NHK NEWS EASY')), body: _buildNewsList());
   }
 
   Widget _buildNewsList() {
     return ListView.builder(
+      itemCount: _hasMore ? _newsList.length + 1 : _newsList.length,
       padding: const EdgeInsets.all(16.0),
       itemBuilder: (context, i) {
-        if (i < _news.length) {
-          return _buildNews(_news[i]);
-        } else {
-          return new ListTile(title: Text("News"));
+        if (i >= _newsList.length) {
+          if (!_isLoading) {
+            _loadNewsList();
+          }
+
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
+
+        return _buildNews(_newsList[i]);
       },
     );
   }
@@ -60,93 +56,7 @@ class RandomWordsState extends State<RandomWords> {
     return ListTile(title: Text(news.title));
   }
 
-  Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('NHK NEWS EASY'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
-        ],
-      ),
-      body: Center(
-          child: FutureBuilder<List<News>>(
-              future: _newsListFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _news.addAll(snapshot.data);
-
-                  return _buildNewsList();
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-
-                return CircularProgressIndicator();
-              })),
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          final tiles = _saved.map(
-            (WordPair pair) {
-              return ListTile(
-                title: Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-              );
-            },
-          );
-          final divided = ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
-          ).toList();
-
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Saved Suggestions'),
-            ),
-            body: ListView(children: divided),
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _newsListFuture = _fetchNews();
-  }
-
-  Future<List<News>> _fetchNews() async {
+  Future<List<News>> _fetchNewsList() async {
     final response = await http.get(
         "https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z");
 
@@ -159,9 +69,33 @@ class RandomWordsState extends State<RandomWords> {
       throw Exception("Failed to fetch news");
     }
   }
+
+  _loadNewsList() {
+    _isLoading = true;
+
+    _fetchNewsList().then((List<News> newsList) {
+      if (newsList.isEmpty) {
+        setState(() {
+          _hasMore = false;
+        });
+      } else {
+        setState(() {
+          _newsList.addAll(newsList);
+        });
+      }
+    }).catchError((error) {
+      setState(() {
+        _hasMore = false;
+      });
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 }
 
-class RandomWords extends StatefulWidget {
+class NewsList extends StatefulWidget {
   @override
-  RandomWordsState createState() => RandomWordsState();
+  NewsListState createState() => NewsListState();
 }
