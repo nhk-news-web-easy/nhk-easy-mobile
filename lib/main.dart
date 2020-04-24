@@ -33,7 +33,7 @@ class NewsListState extends State<NewsList> {
   }
 
   Widget _buildNewsList() {
-    return ListView.builder(
+    return ListView.separated(
       itemCount: _hasMore ? _newsList.length + 1 : _newsList.length,
       padding: const EdgeInsets.all(16.0),
       itemBuilder: (context, i) {
@@ -49,11 +49,19 @@ class NewsListState extends State<NewsList> {
 
         return _buildNews(_newsList[i]);
       },
+      separatorBuilder: (context, i) => Divider(
+        color: Colors.grey,
+      ),
     );
   }
 
   Widget _buildNews(News news) {
-    return ListTile(title: Text(news.title));
+    return ListTile(
+      title: Text(news.title),
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(news.imageUrl),
+      ),
+    );
   }
 
   Future<List<News>> _fetchNewsList() async {
