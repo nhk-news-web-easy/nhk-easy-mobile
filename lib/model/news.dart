@@ -3,6 +3,8 @@ class News {
 
   String title;
 
+  String titleWithRuby;
+
   String body;
 
   String imageUrl;
@@ -15,6 +17,7 @@ class News {
     var news = News();
     news.newsId = json['newsId'];
     news.title = json['title'];
+    news.titleWithRuby = json['titleWithRuby'];
     news.body = json['body'];
     news.imageUrl = json['imageUrl'];
     news.publishedAtUtc = json['publishedAtUtc'];

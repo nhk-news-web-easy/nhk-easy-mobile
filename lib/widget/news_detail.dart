@@ -13,7 +13,7 @@ class NewsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(news.title),
+          title: Text('NHK NEWS EASY'),
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -46,6 +46,7 @@ class NewsDetail extends StatelessWidget {
             }
           </style>
           $image
+          <h1>${news.titleWithRuby}</h1>
           ${news.body}
         </body>
       </html>
