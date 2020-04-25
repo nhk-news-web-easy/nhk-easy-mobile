@@ -27,6 +27,7 @@ class NewsDetail extends StatelessWidget {
     if (news.imageUrl != null && news.imageUrl != "") {
       children.add(Expanded(
         child: Image.network(news.imageUrl),
+        flex: 0,
       ));
     }
 
