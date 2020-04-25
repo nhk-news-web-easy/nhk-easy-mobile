@@ -1,8 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:nhk_easy/service/news_service.dart';
 
 import 'model/news.dart';
 
@@ -21,7 +18,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class NewsList extends StatefulWidget {
+  @override
+  NewsListState createState() => NewsListState();
+}
+
 class NewsListState extends State<NewsList> {
+  final _newsService = NewsService();
   final _newsList = List<News>();
   bool _isLoading = false;
   bool _hasMore = true;
@@ -64,24 +67,10 @@ class NewsListState extends State<NewsList> {
     );
   }
 
-  Future<List<News>> _fetchNewsList() async {
-    final response = await http.get(
-        "https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z");
-
-    if (response.statusCode == 200) {
-      var decoder = Utf8Decoder();
-      var newsList = List.of(json.decode(decoder.convert(response.bodyBytes)));
-
-      return newsList.map((news) => News.fromJson(news)).toList();
-    } else {
-      throw Exception("Failed to fetch news");
-    }
-  }
-
   _loadNewsList() {
     _isLoading = true;
 
-    _fetchNewsList().then((List<News> newsList) {
+    _newsService.fetchNewsList().then((List<News> newsList) {
       if (newsList.isEmpty) {
         setState(() {
           _hasMore = false;
@@ -101,9 +90,4 @@ class NewsListState extends State<NewsList> {
       });
     });
   }
-}
-
-class NewsList extends StatefulWidget {
-  @override
-  NewsListState createState() => NewsListState();
 }
