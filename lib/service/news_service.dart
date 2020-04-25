@@ -6,7 +6,7 @@ import 'package:nhk_easy/model/news.dart';
 class NewsService {
   Future<List<News>> fetchNewsList() async {
     final response = await http.get(
-        "https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z");
+        'https://nhk.dekiru.app/news?startDate=2020-04-01T02:30:00.000Z&endDate=2020-04-30T02:30:00.000Z');
 
     if (response.statusCode == 200) {
       var decoder = Utf8Decoder();
@@ -18,7 +18,7 @@ class NewsService {
 
       return newsList;
     } else {
-      throw Exception("Failed to fetch news");
+      throw Exception('Failed to fetch news');
     }
   }
 }
