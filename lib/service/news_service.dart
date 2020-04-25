@@ -10,9 +10,13 @@ class NewsService {
 
     if (response.statusCode == 200) {
       var decoder = Utf8Decoder();
-      var newsList = List.of(json.decode(decoder.convert(response.bodyBytes)));
+      var newsList = List.of(json.decode(decoder.convert(response.bodyBytes)))
+          .map((news) => News.fromJson(news))
+          .toList();
 
-      return newsList.map((news) => News.fromJson(news)).toList();
+      newsList.sort((a, b) => -a.publishedAtUtc.compareTo(b.publishedAtUtc));
+
+      return newsList;
     } else {
       throw Exception("Failed to fetch news");
     }
