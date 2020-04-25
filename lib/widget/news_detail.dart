@@ -17,31 +17,16 @@ class NewsDetail extends StatelessWidget {
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
-          child: Column(children: _buildChildren(news)),
+          child: WebView(
+              initialUrl: Uri.dataFromString(_buildHtml(news),
+                      mimeType: 'text/html', encoding: utf8)
+                  .toString()),
         ));
   }
 
-  _buildChildren(News news) {
-    var children = <Widget>[];
-
-    if (news.imageUrl != null && news.imageUrl != "") {
-      children.add(Expanded(
-        child: Image.network(news.imageUrl),
-        flex: 0,
-      ));
-    }
-
-    children.add(Expanded(
-      child: WebView(
-          initialUrl: Uri.dataFromString(_buildHtml(news),
-                  mimeType: 'text/html', encoding: utf8)
-              .toString()),
-    ));
-
-    return children;
-  }
-
   _buildHtml(News news) {
+    final image = news.imageUrl != "" ? "<img src=${news.imageUrl} />" : "";
+
     return """
       <!DOCTYPE html>
       <html>
@@ -56,7 +41,11 @@ class NewsDetail extends StatelessWidget {
             rt {
               font-size: 12px;
             }
+            img {
+              max-width: 100%;
+            }
           </style>
+          $image
           ${news.body}
         </body>
       </html>
