@@ -11,7 +11,37 @@ class NewsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final html = """
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(news.title),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(children: _buildChildren(news)),
+        ));
+  }
+
+  _buildChildren(News news) {
+    var children = <Widget>[];
+
+    if (news.imageUrl != null && news.imageUrl != "") {
+      children.add(Expanded(
+        child: Image.network(news.imageUrl),
+      ));
+    }
+
+    children.add(Expanded(
+      child: WebView(
+          initialUrl: Uri.dataFromString(_buildHtml(news),
+                  mimeType: 'text/html', encoding: utf8)
+              .toString()),
+    ));
+
+    return children;
+  }
+
+  _buildHtml(News news) {
+    return """
       <!DOCTYPE html>
       <html>
         <head>
@@ -30,17 +60,5 @@ class NewsDetail extends StatelessWidget {
         </body>
       </html>
     """;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(news.title),
-      ),
-      body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: WebView(
-              initialUrl: Uri.dataFromString(html,
-                      mimeType: 'text/html', encoding: utf8)
-                  .toString())),
-    );
   }
 }
