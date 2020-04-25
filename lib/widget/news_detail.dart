@@ -11,6 +11,26 @@ class NewsDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final html = """
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+          <style>
+            * {
+              font-size: 16px;
+            }
+            rt {
+              font-size: 12px;
+            }
+          </style>
+          ${news.body}
+        </body>
+      </html>
+    """;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(news.title),
@@ -18,7 +38,7 @@ class NewsDetail extends StatelessWidget {
       body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: WebView(
-              initialUrl: Uri.dataFromString(news.body,
+              initialUrl: Uri.dataFromString(html,
                       mimeType: 'text/html', encoding: utf8)
                   .toString())),
     );
