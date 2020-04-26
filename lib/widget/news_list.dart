@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/service/news_service.dart';
 
@@ -75,6 +76,9 @@ class NewsListState extends State<NewsList> {
       setState(() {
         _hasMore = false;
       });
+
+      Fluttertoast.showToast(
+          msg: "Network error", gravity: ToastGravity.CENTER);
     }).whenComplete(() {
       setState(() {
         _isLoading = false;
