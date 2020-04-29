@@ -63,7 +63,8 @@ class NewsListState extends State<NewsList> {
     _isLoading = true;
 
     DateTime now = DateTime.now().toUtc();
-    DateTime startDate = DateTime.utc(now.year, now.month, now.day, 0, 0, 0);
+    DateTime startDate = DateTime.utc(now.year, now.month, now.day, 0, 0, 0)
+        .subtract(new Duration(days: 2));
     DateTime endDate = DateTime.utc(now.year, now.month, now.day, 23, 59, 59);
 
     _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
