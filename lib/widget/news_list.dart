@@ -62,7 +62,11 @@ class NewsListState extends State<NewsList> {
   _loadNewsList() {
     _isLoading = true;
 
-    _newsService.fetchNewsList().then((List<News> newsList) {
+    DateTime now = DateTime.now().toUtc();
+    DateTime startDate = DateTime.utc(now.year, now.month, now.day, 0, 0, 0);
+    DateTime endDate = DateTime.utc(now.year, now.month, now.day, 23, 59, 59);
+
+    _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
       if (newsList.isEmpty) {
         setState(() {
           _hasMore = false;
