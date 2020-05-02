@@ -27,9 +27,9 @@ matrix:
             - libstdc++6
             - fonts-droid
       before_script:
-        - wget http://services.gradle.org/distributions/gradle-3.5-bin.zip
-        - unzip -qq gradle-3.5-bin.zip
-        - export GRADLE_HOME=$PWD/gradle-3.5
+        - wget http://services.gradle.org/distributions/gradle-6.3-bin.zip
+        - unzip -qq gradle-6.3-bin.zip
+        - export GRADLE_HOME=$PWD/gradle-6.3
         - export PATH=$GRADLE_HOME/bin:$PATH
         - git clone https://github.com/flutter/flutter.git -b alpha --depth 1
       script:
