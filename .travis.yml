@@ -41,7 +41,8 @@ matrix:
       language: generic
       osx_image: xcode8.3
       before_script:
-        - sudo easy_install pip
+        - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        - python get-pip.py --user
         - pip install six
         - brew update
         - brew install --HEAD libimobiledevice
