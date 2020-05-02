@@ -64,13 +64,15 @@ class NewsListState extends State<NewsList> {
     _isLoading = true;
 
     var lastNews = _newsList.isEmpty ? null : _newsList.last;
-    DateTime now = lastNews == null
+    DateTime prevDate = lastNews == null
         ? DateTime.now().toUtc()
         : DateTime.parse(lastNews.publishedAtUtc)
             .subtract(new Duration(days: 1));
-    DateTime startDate = DateTime.utc(now.year, now.month, now.day, 0, 0, 0)
-        .subtract(new Duration(days: 2));
-    DateTime endDate = DateTime.utc(now.year, now.month, now.day, 23, 59, 59);
+    DateTime startDate =
+        DateTime.utc(prevDate.year, prevDate.month, prevDate.day, 0, 0, 0)
+            .subtract(new Duration(days: 7));
+    DateTime endDate =
+        DateTime.utc(prevDate.year, prevDate.month, prevDate.day, 23, 59, 59);
 
     _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
       if (newsList.isEmpty) {
