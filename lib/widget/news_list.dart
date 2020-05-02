@@ -63,7 +63,11 @@ class NewsListState extends State<NewsList> {
   _loadNewsList() {
     _isLoading = true;
 
-    DateTime now = DateTime.now().toUtc();
+    var lastNews = _newsList.isEmpty ? null : _newsList.last;
+    DateTime now = lastNews == null
+        ? DateTime.now().toUtc()
+        : DateTime.parse(lastNews.publishedAtUtc)
+            .subtract(new Duration(days: 1));
     DateTime startDate = DateTime.utc(now.year, now.month, now.day, 0, 0, 0)
         .subtract(new Duration(days: 2));
     DateTime endDate = DateTime.utc(now.year, now.month, now.day, 23, 59, 59);
