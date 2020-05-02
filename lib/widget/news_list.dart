@@ -48,6 +48,7 @@ class NewsListState extends State<NewsList> {
   Widget _buildNews(News news) {
     return ListTile(
       title: Text(news.title),
+      subtitle: Text(DateTime.parse(news.publishedAtUtc).toLocal().toString()),
       leading: CircleAvatar(
         backgroundImage: NetworkImage(news.imageUrl),
       ),
