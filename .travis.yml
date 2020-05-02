@@ -1,7 +1,7 @@
-sudo: true
 matrix:
   include:
     - os: linux
+      sudo: true
       language: android
       licenses:
         - 'android-sdk-preview-license-.+'
