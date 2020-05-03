@@ -73,7 +73,7 @@ class NewsListState extends State<NewsList> {
     _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
       if (newsList.isNotEmpty) {
         setState(() {
-          _newsList.addAll(newsList);
+          _newsList.insertAll(0, newsList);
         });
       }
 
