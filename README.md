@@ -1,4 +1,4 @@
-# nhk-easy-mobile (WIP)
+# nhk-easy-mobile
 An unofficial client for NHK NEWS WEB EASY.
 
 ## Screenshots
