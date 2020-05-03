@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/service/news_service.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'news_detail.dart';
 
@@ -13,36 +14,34 @@ class NewsList extends StatefulWidget {
 class NewsListState extends State<NewsList> {
   final _newsService = NewsService();
   final _newsList = List<News>();
-  bool _isLoading = false;
-  bool _hasMore = true;
+  final _refreshController = RefreshController(initialRefresh: false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadNewsList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('NHK NEWS EASY')), body: _buildNewsList());
-  }
-
-  Widget _buildNewsList() {
-    return ListView.separated(
-      itemCount: _hasMore ? _newsList.length + 1 : _newsList.length,
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: (context, i) {
-        if (i >= _newsList.length) {
-          if (!_isLoading) {
-            _loadNewsList();
-          }
-
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return _buildNews(_newsList[i]);
-      },
-      separatorBuilder: (context, i) => Divider(
-        color: Colors.grey,
-      ),
-    );
+        appBar: AppBar(title: Text('NHK NEWS EASY')),
+        body: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          controller: _refreshController,
+          onRefresh: _refreshNewsList,
+          onLoading: _loadNewsList,
+          child: ListView.separated(
+              itemBuilder: (item, i) {
+                return _buildNews(_newsList[i]);
+              },
+              separatorBuilder: (context, i) => Divider(
+                    color: Colors.grey,
+                  ),
+              itemCount: _newsList.length),
+        ));
   }
 
   Widget _buildNews(News news) {
@@ -60,41 +59,60 @@ class NewsListState extends State<NewsList> {
     );
   }
 
-  _loadNewsList() {
-    _isLoading = true;
-
-    var lastNews = _newsList.isEmpty ? null : _newsList.last;
-    DateTime prevDate = lastNews == null
+  _refreshNewsList() {
+    var firstNews = _newsList.isEmpty ? null : _newsList.first;
+    DateTime newestDate = firstNews == null
         ? DateTime.now().toUtc()
-        : DateTime.parse(lastNews.publishedAtUtc)
-            .subtract(new Duration(days: 1));
-    DateTime startDate =
-        DateTime.utc(prevDate.year, prevDate.month, prevDate.day, 0, 0, 0)
-            .subtract(new Duration(days: 7));
-    DateTime endDate =
-        DateTime.utc(prevDate.year, prevDate.month, prevDate.day, 23, 59, 59);
+        : DateTime.parse(firstNews.publishedAtUtc).add(new Duration(days: 1));
+    DateTime startDate = DateTime.utc(
+        newestDate.year, newestDate.month, newestDate.day, 0, 0, 0);
+    DateTime endDate = DateTime.utc(
+            newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
+        .add(Duration(days: 7));
 
     _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
-      if (newsList.isEmpty) {
-        setState(() {
-          _hasMore = false;
-        });
-      } else {
+      if (newsList.isNotEmpty) {
         setState(() {
           _newsList.addAll(newsList);
         });
       }
-    }).catchError((error) {
-      setState(() {
-        _hasMore = false;
-      });
 
+      _refreshController.refreshCompleted();
+    }).catchError((error) {
       Fluttertoast.showToast(
           msg: "Network error", gravity: ToastGravity.CENTER);
-    }).whenComplete(() {
-      setState(() {
-        _isLoading = false;
-      });
+
+      _refreshController.refreshFailed();
+    });
+  }
+
+  _loadNewsList() {
+    var lastNews = _newsList.isEmpty ? null : _newsList.last;
+    DateTime oldestDate = lastNews == null
+        ? DateTime.now().toUtc()
+        : DateTime.parse(lastNews.publishedAtUtc)
+            .subtract(new Duration(days: 1));
+    DateTime startDate =
+        DateTime.utc(oldestDate.year, oldestDate.month, oldestDate.day, 0, 0, 0)
+            .subtract(new Duration(days: 7));
+    DateTime endDate = DateTime.utc(
+        oldestDate.year, oldestDate.month, oldestDate.day, 23, 59, 59);
+
+    _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
+      if (newsList.isNotEmpty) {
+        setState(() {
+          _newsList.addAll(newsList);
+        });
+
+        _refreshController.loadComplete();
+      } else {
+        _refreshController.loadNoData();
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(
+          msg: "Network error", gravity: ToastGravity.CENTER);
+
+      _refreshController.loadFailed();
     });
   }
 }
