@@ -14,14 +14,7 @@ class NewsList extends StatefulWidget {
 class NewsListState extends State<NewsList> {
   final _newsService = NewsService();
   final _newsList = List<News>();
-  final _refreshController = RefreshController(initialRefresh: false);
-
-  @override
-  void initState() {
-    super.initState();
-
-    _loadNewsList();
-  }
+  final _refreshController = RefreshController(initialRefresh: true);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +55,7 @@ class NewsListState extends State<NewsList> {
   _refreshNewsList() {
     var firstNews = _newsList.isEmpty ? null : _newsList.first;
     DateTime newestDate = firstNews == null
-        ? DateTime.now().toUtc()
+        ? DateTime.now().toUtc().subtract(Duration(days: 7))
         : DateTime.parse(firstNews.publishedAtUtc).add(new Duration(days: 1));
     DateTime startDate = DateTime.utc(
         newestDate.year, newestDate.month, newestDate.day, 0, 0, 0);
