@@ -35,7 +35,7 @@ matrix:
         - yes | sdkmanager "platforms;android-29"
         - yes | sdkmanager "build-tools;28.0.3"
       script:
-        - ./flutter/bin/flutter -v build apk
+        - ./flutter/bin/flutter -v build apk --debug
 
     - os: osx
       language: generic
