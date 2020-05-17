@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
-import 'package:nhk_easy/service/news_service.dart';
+import 'package:nhk_easy/service/cached_news_service.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'news_detail.dart';
@@ -13,7 +13,7 @@ class NewsList extends StatefulWidget {
 }
 
 class NewsListState extends State<NewsList> {
-  final _newsService = NewsService();
+  final _cachedNewsService = CachedNewsService();
   final _newsList = List<News>();
   final _refreshController = RefreshController(initialRefresh: true);
 
@@ -64,7 +64,9 @@ class NewsListState extends State<NewsList> {
             newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
         .add(Duration(days: 7));
 
-    _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
+    _cachedNewsService
+        .fetchNewsList(startDate, endDate)
+        .then((List<News> newsList) {
       if (newsList.isNotEmpty) {
         setState(() {
           _newsList.insertAll(0, newsList);
@@ -94,7 +96,9 @@ class NewsListState extends State<NewsList> {
     DateTime endDate = DateTime.utc(
         oldestDate.year, oldestDate.month, oldestDate.day, 23, 59, 59);
 
-    _newsService.fetchNewsList(startDate, endDate).then((List<News> newsList) {
+    _cachedNewsService
+        .fetchNewsList(startDate, endDate)
+        .then((List<News> newsList) {
       if (newsList.isNotEmpty) {
         setState(() {
           _newsList.addAll(newsList);

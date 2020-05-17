@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DbService {
+class BaseRepository {
   Future<Database> getDatabase() async {
     String databasePath = await getDatabasesPath();
     Future<Database> database = openDatabase(
