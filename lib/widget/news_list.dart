@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/service/cached_news_service.dart';
+import 'package:nhk_easy/service/config_service.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'news_detail.dart';
@@ -13,6 +14,7 @@ class NewsList extends StatefulWidget {
 }
 
 class NewsListState extends State<NewsList> {
+  final _configService = ConfigService();
   final _cachedNewsService = CachedNewsService();
   final _newsList = List<News>();
   final _refreshController = RefreshController(initialRefresh: true);
@@ -53,16 +55,23 @@ class NewsListState extends State<NewsList> {
     );
   }
 
-  _refreshNewsList() {
-    var firstNews = _newsList.isEmpty ? null : _newsList.first;
-    DateTime newestDate = firstNews == null
-        ? DateTime.now().toUtc().subtract(Duration(days: 7))
-        : DateTime.parse(firstNews.publishedAtUtc).add(new Duration(days: 1));
+  _refreshNewsList() async {
+    final config = await _configService.getConfig();
+    final latestNews = _newsList.isEmpty ? null : _newsList.first;
+    final useConfigDate = config != null && latestNews == null;
+    DateTime newestDate = latestNews == null
+        ? (config != null
+                ? DateTime.parse(config.newsFetchedEndUtc)
+                : DateTime.now().toUtc())
+            .subtract(Duration(days: 7))
+        : DateTime.parse(latestNews.publishedAtUtc).add(new Duration(days: 1));
     DateTime startDate = DateTime.utc(
         newestDate.year, newestDate.month, newestDate.day, 0, 0, 0);
-    DateTime endDate = DateTime.utc(
-            newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
-        .add(Duration(days: 7));
+    DateTime endDate = useConfigDate
+        ? DateTime.parse(config.newsFetchedEndUtc)
+        : DateTime.utc(
+                newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
+            .add(Duration(days: 7));
 
     _cachedNewsService
         .fetchNewsList(startDate, endDate)
@@ -85,7 +94,7 @@ class NewsListState extends State<NewsList> {
   }
 
   _loadNewsList() {
-    var lastNews = _newsList.isEmpty ? null : _newsList.last;
+    final lastNews = _newsList.isEmpty ? null : _newsList.last;
     DateTime oldestDate = lastNews == null
         ? DateTime.now().toUtc()
         : DateTime.parse(lastNews.publishedAtUtc)

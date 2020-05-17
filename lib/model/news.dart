@@ -14,7 +14,7 @@ class News {
   News();
 
   factory News.fromJson(Map<String, dynamic> json) {
-    var news = News();
+    final news = News();
     news.newsId = json['newsId'];
     news.title = json['title'];
     news.titleWithRuby = json['titleWithRuby'];

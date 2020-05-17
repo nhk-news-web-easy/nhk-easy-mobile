@@ -3,21 +3,27 @@ import 'package:nhk_easy/model/config.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/repository/config_repository.dart';
 import 'package:nhk_easy/repository/news_repository.dart';
+import 'package:nhk_easy/service/config_service.dart';
 import 'package:nhk_easy/service/news_service.dart';
 
 class CachedNewsService {
   final _configRepository = ConfigRepository();
   final _newsRepository = NewsRepository();
+  final _configService = ConfigService();
   final _newsService = NewsService();
 
   Future<List<News>> fetchNewsList(DateTime startDate, DateTime endDate) async {
-    final configs = await _configRepository.getConfigs();
-    final config =
-        (configs != null && configs.length > 0) ? configs.first : null;
+    final config = await _configService.getConfig();
 
     if (config != null && (_newsFetched(config, startDate, endDate))) {
-      return _newsRepository.getNews(
-          startDate.toIso8601String(), endDate.toIso8601String());
+      try {
+        return await _newsRepository.getNews(
+            startDate.toIso8601String(), endDate.toIso8601String());
+      } catch (error, stackTrace) {
+        ErrorReporter.reportError(error, stackTrace);
+
+        return _newsService.fetchNewsList(startDate, endDate);
+      }
     } else {
       final news = await _newsService.fetchNewsList(startDate, endDate);
 

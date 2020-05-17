@@ -9,8 +9,8 @@ class NewsService {
         'https://nhk.dekiru.app/news?startDate=${startDate.toIso8601String()}&endDate=${endDate.toIso8601String()}');
 
     if (response.statusCode == 200) {
-      var decoder = Utf8Decoder();
-      var newsList = List.of(json.decode(decoder.convert(response.bodyBytes)))
+      final decoder = Utf8Decoder();
+      final newsList = List.of(json.decode(decoder.convert(response.bodyBytes)))
           .map((news) => News.fromJson(news))
           .toList();
 
