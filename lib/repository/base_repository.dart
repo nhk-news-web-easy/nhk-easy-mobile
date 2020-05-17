@@ -7,14 +7,24 @@ class BaseRepository {
     Future<Database> database = openDatabase(
       join(databasePath, 'nhk-easy.db'),
       onCreate: (db, version) {
-        return db.execute(
-          '''
-          CREATE TABLE config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT);
-          CREATE TABLE news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT);
-          ''',
-        );
+        final batch = db.batch();
+        batch.execute(
+            'CREATE TABLE IF NOT EXISTS config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT)');
+        batch.execute(
+            'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT)');
+
+        return batch.commit();
       },
-      version: 1,
+      onUpgrade: (db, oldVersion, newVersion) {
+        final batch = db.batch();
+        batch.execute(
+            'CREATE TABLE IF NOT EXISTS config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT)');
+        batch.execute(
+            'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT)');
+
+        return batch.commit();
+      },
+      version: 3,
     );
 
     return database;

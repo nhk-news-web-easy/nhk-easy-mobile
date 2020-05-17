@@ -6,7 +6,7 @@ import 'base_repository.dart';
 class ConfigRepository extends BaseRepository {
   Future<List<Config>> getConfigs() async {
     final database = await getDatabase();
-    final List<Map<String, dynamic>> rows = await database.query('config');
+    final rows = await database.query('config');
 
     return List.generate(rows.length, (i) {
       final row = rows[i];
@@ -18,7 +18,7 @@ class ConfigRepository extends BaseRepository {
     });
   }
 
-  Future<void> addConfig(Config config) async {
+  Future<void> save(Config config) async {
     final database = await getDatabase();
 
     await database.insert('config', config.toMap(),
