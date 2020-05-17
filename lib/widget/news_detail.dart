@@ -25,7 +25,7 @@ class NewsDetail extends StatelessWidget {
   }
 
   _buildHtml(News news) {
-    final image = news.imageUrl != "" ? "<img src=${news.imageUrl} />" : "";
+    final image = news.imageUrl != '' ? '<img src=${news.imageUrl} />' : '';
 
     return """
       <!DOCTYPE html>

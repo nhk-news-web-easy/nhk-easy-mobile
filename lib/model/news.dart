@@ -24,4 +24,15 @@ class News {
 
     return news;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'newsId': newsId,
+      'title': title,
+      'titleWithRuby': titleWithRuby,
+      'body': body,
+      'imageUrl': imageUrl,
+      'publishedAtUtc': publishedAtUtc
+    };
+  }
 }

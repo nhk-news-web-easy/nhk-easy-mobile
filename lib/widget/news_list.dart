@@ -73,7 +73,7 @@ class NewsListState extends State<NewsList> {
       _refreshController.refreshCompleted();
     }).catchError((error) {
       Fluttertoast.showToast(
-          msg: "Network error", gravity: ToastGravity.CENTER);
+          msg: 'Network error', gravity: ToastGravity.CENTER);
 
       _refreshController.refreshFailed();
     });
@@ -103,7 +103,7 @@ class NewsListState extends State<NewsList> {
       }
     }).catchError((error) {
       Fluttertoast.showToast(
-          msg: "Network error", gravity: ToastGravity.CENTER);
+          msg: 'Network error', gravity: ToastGravity.CENTER);
 
       _refreshController.loadFailed();
     });
