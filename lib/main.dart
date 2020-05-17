@@ -1,7 +1,45 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
+import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/widget/news_list.dart';
 
-void main() => runApp(MyApp());
+main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await GlobalConfiguration().loadFromAsset("config");
+
+  runZoned<Future<void>>(() async {
+    runApp(MyApp());
+  }, onError: (error, stackTrace) {
+    _reportError(error, stackTrace);
+  });
+
+  FlutterError.onError = (details, {bool forceReport = false}) {
+    if (isInDebugMode) {
+      FlutterError.dumpErrorToConsole(details);
+    } else {
+      Zone.current.handleUncaughtError(details.exception, details.stack);
+    }
+  };
+}
+
+Future<void> _reportError(dynamic error, dynamic stackTrace) async {
+  if (isInDebugMode) {
+    print(stackTrace);
+  } else {
+    ErrorReporter.reportError(error, stackTrace);
+  }
+}
+
+bool get isInDebugMode {
+  bool inDebugMode = false;
+
+  assert(inDebugMode = true);
+
+  return inDebugMode;
+}
 
 class MyApp extends StatelessWidget {
   @override

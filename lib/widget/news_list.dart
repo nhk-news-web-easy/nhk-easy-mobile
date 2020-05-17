@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/service/news_service.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -72,6 +73,8 @@ class NewsListState extends State<NewsList> {
 
       _refreshController.refreshCompleted();
     }).catchError((error) {
+      ErrorReporter.reportError(error, null);
+
       Fluttertoast.showToast(
           msg: 'Network error', gravity: ToastGravity.CENTER);
 
@@ -102,6 +105,8 @@ class NewsListState extends State<NewsList> {
         _refreshController.loadNoData();
       }
     }).catchError((error) {
+      ErrorReporter.reportError(error, null);
+
       Fluttertoast.showToast(
           msg: 'Network error', gravity: ToastGravity.CENTER);
 
