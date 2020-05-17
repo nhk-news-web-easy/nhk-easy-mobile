@@ -4,11 +4,11 @@ import 'package:sqflite/sqflite.dart';
 import 'base_repository.dart';
 
 class NewsRepository extends BaseRepository {
-  Future<List<News>> getNews(String startDate, String endDate) async {
+  Future<List<News>> getNews(DateTime startDate, DateTime endDate) async {
     final database = await getDatabase();
     final rows = await database.rawQuery(
-        'select * from news where publishedAtUtc >= ? and publishedAtUtc <= ?',
-        [startDate, endDate]);
+        'select * from news where publishedAtEpoch >= ? and publishedAtEpoch <= ?',
+        [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch]);
 
     return List.generate(rows.length, (i) {
       final row = rows[i];

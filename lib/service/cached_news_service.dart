@@ -17,8 +17,7 @@ class CachedNewsService {
 
     if (config != null && (_newsFetched(config, startDate, endDate))) {
       try {
-        return await _newsRepository.getNews(
-            startDate.toIso8601String(), endDate.toIso8601String());
+        return await _newsRepository.getNews(startDate, endDate);
       } catch (error, stackTrace) {
         ErrorReporter.reportError(error, stackTrace);
 

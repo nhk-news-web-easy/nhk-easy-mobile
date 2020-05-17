@@ -11,6 +11,8 @@ class News {
 
   String publishedAtUtc;
 
+  int publishedAtEpoch;
+
   News();
 
   factory News.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,8 @@ class News {
     news.body = json['body'];
     news.imageUrl = json['imageUrl'];
     news.publishedAtUtc = json['publishedAtUtc'];
+    news.publishedAtEpoch =
+        DateTime.parse(news.publishedAtUtc).millisecondsSinceEpoch;
 
     return news;
   }
@@ -32,7 +36,8 @@ class News {
       'titleWithRuby': titleWithRuby,
       'body': body,
       'imageUrl': imageUrl,
-      'publishedAtUtc': publishedAtUtc
+      'publishedAtUtc': publishedAtUtc,
+      'publishedAtEpoch': publishedAtEpoch
     };
   }
 }

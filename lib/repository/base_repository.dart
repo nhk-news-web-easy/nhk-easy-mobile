@@ -11,7 +11,7 @@ class BaseRepository {
         batch.execute(
             'CREATE TABLE IF NOT EXISTS config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT)');
         batch.execute(
-            'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT)');
+            'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT, publishedAtEpoch INTEGER)');
 
         return batch.commit();
       },
