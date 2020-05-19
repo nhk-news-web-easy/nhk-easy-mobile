@@ -17,7 +17,11 @@ class CachedNewsService {
 
     if (config != null && (_newsFetched(config, startDate, endDate))) {
       try {
-        return await _newsRepository.getNews(startDate, endDate);
+        final news = await _newsRepository.getNews(startDate, endDate);
+
+        news.sort((a, b) => -a.publishedAtUtc.compareTo(b.publishedAtUtc));
+
+        return news;
       } catch (error, stackTrace) {
         ErrorReporter.reportError(error, stackTrace);
 
