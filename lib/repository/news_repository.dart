@@ -19,6 +19,7 @@ class NewsRepository extends BaseRepository {
       news.body = row['body'];
       news.imageUrl = row['imageUrl'];
       news.publishedAtUtc = row['publishedAtUtc'];
+      news.publishedAtEpoch = row['publishedAtEpoch'];
 
       return news;
     });
