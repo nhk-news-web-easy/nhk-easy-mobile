@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/repository/base_repository.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatelessWidget {
   final _baseRepository = BaseRepository();
@@ -28,7 +29,9 @@ class Settings extends StatelessWidget {
               SettingsTile(
                 title: 'Privacy Policy',
                 leading: Icon(Icons.description),
-                onTap: () {},
+                onTap: () {
+                  _openPrivacyPolicy(context);
+                },
               )
             ],
           )
@@ -73,5 +76,32 @@ class Settings extends StatelessWidget {
         return alertDialog;
       },
     );
+  }
+
+  void _openPrivacyPolicy(BuildContext context) async {
+    final url = 'https://github.com/Frederick-S/nhk-easy-mobile-privacy-policy';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      final okButton = FlatButton(
+        child: Text('Ok'),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      );
+      final alertDialog = AlertDialog(
+        content: Text(
+            'Failed to open privacy policy in your default browser, you can view it at $url'),
+        actions: <Widget>[okButton],
+      );
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        },
+      );
+    }
   }
 }
