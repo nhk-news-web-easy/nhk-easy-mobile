@@ -5,7 +5,7 @@ class ErrorReporter {
   static final SentryClient _sentryClient =
       SentryClient(dsn: GlobalConfiguration().getString('sentryDsn'));
 
-  static Future<Null> reportError(dynamic error, dynamic stackTrace) async {
+  static Future<void> reportError(dynamic error, dynamic stackTrace) async {
     final SentryResponse response = await _sentryClient.captureException(
       exception: error,
       stackTrace: stackTrace,

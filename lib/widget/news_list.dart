@@ -4,6 +4,7 @@ import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:nhk_easy/service/cached_news_service.dart';
 import 'package:nhk_easy/service/config_service.dart';
+import 'package:nhk_easy/widget/settings.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'news_detail.dart';
@@ -22,7 +23,15 @@ class NewsListState extends State<NewsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('NHK NEWS EASY')),
+        appBar: AppBar(
+          title: Text('NHK NEWS EASY'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: _openSettings,
+            )
+          ],
+        ),
         body: SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
@@ -125,5 +134,12 @@ class NewsListState extends State<NewsList> {
 
       _refreshController.loadFailed();
     });
+  }
+
+  void _openSettings() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+      return Settings();
+    }));
   }
 }

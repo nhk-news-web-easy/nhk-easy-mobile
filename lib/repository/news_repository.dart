@@ -24,7 +24,7 @@ class NewsRepository extends BaseRepository {
     });
   }
 
-  Future<Null> saveAll(List<News> news) async {
+  Future<void> saveAll(List<News> news) async {
     final database = await getDatabase();
 
     news.forEach((n) {

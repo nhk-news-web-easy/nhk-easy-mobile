@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nhk_easy/error_reporter.dart';
+import 'package:nhk_easy/repository/base_repository.dart';
+import 'package:settings_ui/settings_ui.dart';
+
+class Settings extends StatelessWidget {
+  final _baseRepository = BaseRepository();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Settings'),
+      ),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            title: 'Misc',
+            tiles: [
+              SettingsTile(
+                title: 'Clear Cache',
+                leading: Icon(Icons.storage),
+                onTap: () {
+                  _clearCache(context);
+                },
+              ),
+              SettingsTile(
+                title: 'Privacy Policy',
+                leading: Icon(Icons.description),
+                onTap: () {},
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  void _clearCache(BuildContext context) {
+    final yesButton = FlatButton(
+      child: Text('Yes'),
+      onPressed: () {
+        _baseRepository.dropDatabase().then((value) {
+          Navigator.pop(context);
+
+          Fluttertoast.showToast(
+              msg: 'Cache removed', gravity: ToastGravity.CENTER);
+        }).catchError((error, stackTrace) {
+          Navigator.pop(context);
+
+          Fluttertoast.showToast(
+              msg: 'Failed to remove cache', gravity: ToastGravity.CENTER);
+
+          ErrorReporter.reportError(error, stackTrace);
+        });
+      },
+    );
+    final noButton = FlatButton(
+      child: Text('No'),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    final alertDialog = AlertDialog(
+      content: Text('Are you sure to remove cache?'),
+      actions: <Widget>[yesButton, noButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  }
+}

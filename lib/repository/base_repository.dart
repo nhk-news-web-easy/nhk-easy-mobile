@@ -3,9 +3,9 @@ import 'package:sqflite/sqflite.dart';
 
 class BaseRepository {
   Future<Database> getDatabase() async {
-    String databasePath = await getDatabasesPath();
+    String databasePath = await _getDatabasePath();
     Future<Database> database = openDatabase(
-      join(databasePath, 'nhk-easy.db'),
+      databasePath,
       onCreate: (db, version) {
         _executeScript(db);
       },
@@ -16,6 +16,18 @@ class BaseRepository {
     );
 
     return database;
+  }
+
+  Future<void> dropDatabase() async {
+    String databasePath = await _getDatabasePath();
+
+    await deleteDatabase(databasePath);
+  }
+
+  Future<String> _getDatabasePath() async {
+    String databasePath = await getDatabasesPath();
+
+    return join(databasePath, 'nhk-easy.db');
   }
 
   void _executeScript(Database db) {
