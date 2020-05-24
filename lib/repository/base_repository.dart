@@ -12,7 +12,7 @@ class BaseRepository {
       onUpgrade: (db, oldVersion, newVersion) {
         _executeScript(db);
       },
-      version: 3,
+      version: 4,
     );
 
     return database;
@@ -35,7 +35,7 @@ class BaseRepository {
     batch.execute(
         'CREATE TABLE IF NOT EXISTS config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT)');
     batch.execute(
-        'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT, publishedAtEpoch INTEGER)');
+        'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT, publishedAtEpoch INTEGER, m3u8Url TEXT)');
 
     batch.commit();
   }

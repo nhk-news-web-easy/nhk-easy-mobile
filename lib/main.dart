@@ -8,7 +8,7 @@ import 'package:nhk_easy/widget/news_list.dart';
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GlobalConfiguration().loadFromAsset("config");
+  await GlobalConfiguration().loadFromAsset('config');
 
   runZoned<Future<void>>(() async {
     runApp(MyApp());

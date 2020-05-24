@@ -13,6 +13,8 @@ class News {
 
   int publishedAtEpoch;
 
+  String m3u8Url;
+
   News();
 
   factory News.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class News {
     news.publishedAtUtc = json['publishedAtUtc'];
     news.publishedAtEpoch =
         DateTime.parse(news.publishedAtUtc).millisecondsSinceEpoch;
+    news.m3u8Url = json['m3u8Url'];
 
     return news;
   }
@@ -37,7 +40,8 @@ class News {
       'body': body,
       'imageUrl': imageUrl,
       'publishedAtUtc': publishedAtUtc,
-      'publishedAtEpoch': publishedAtEpoch
+      'publishedAtEpoch': publishedAtEpoch,
+      'm3u8Url': m3u8Url
     };
   }
 }
