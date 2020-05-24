@@ -6,11 +6,25 @@ import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class NewsDetail extends StatelessWidget {
+class NewsDetail extends StatefulWidget {
   final News news;
-  AudioPlayer _audioPlayer;
 
-  NewsDetail({Key key, @required this.news}) : super(key: key) {
+  const NewsDetail(this.news);
+
+  @override
+  NewsDetailState createState() => NewsDetailState();
+}
+
+class NewsDetailState extends State<NewsDetail> {
+  News news;
+  AudioPlayer _audioPlayer;
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    this.news = widget.news;
     _audioPlayer = AudioPlayer();
 
     if (_hasAudio()) {
@@ -60,10 +74,13 @@ class NewsDetail extends StatelessWidget {
                       ErrorReporter.reportError(error, stackTrace);
                     });
                   }
+
+                  setState(() {
+                    _isPlaying = _audioPlayer.playbackState ==
+                        AudioPlaybackState.playing;
+                  });
                 },
-                child: _audioPlayer.playbackState == AudioPlaybackState.playing
-                    ? Icon(Icons.pause)
-                    : Icon(Icons.play_arrow))
+                child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow))
             : Container(),
       ),
     );

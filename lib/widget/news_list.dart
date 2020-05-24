@@ -58,7 +58,7 @@ class NewsListState extends State<NewsList> {
       ),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
-          return NewsDetail(news: news);
+          return NewsDetail(news);
         }));
       },
     );
