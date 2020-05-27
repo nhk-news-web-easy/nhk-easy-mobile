@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nhk_easy/error_reporter.dart';
@@ -54,7 +55,7 @@ class NewsListState extends State<NewsList> {
       title: Text(news.title),
       subtitle: Text(DateTime.parse(news.publishedAtUtc).toLocal().toString()),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(news.imageUrl),
+        backgroundImage: CachedNetworkImageProvider(news.imageUrl),
       ),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
