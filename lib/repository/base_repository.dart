@@ -1,42 +1,28 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
 class BaseRepository {
   Future<Database> getDatabase() async {
-    String databasePath = await _getDatabasePath();
-    Future<Database> database = openDatabase(
-      databasePath,
-      onCreate: (db, version) {
-        _executeScript(db);
-      },
-      onUpgrade: (db, oldVersion, newVersion) {
-        _executeScript(db);
-      },
-      version: 4,
-    );
+    final databasePath = await _getDatabasePath();
+    final databaseFactory = databaseFactoryIo;
 
-    return database;
+    return await databaseFactory.openDatabase(databasePath);
   }
 
   Future<void> dropDatabase() async {
-    String databasePath = await _getDatabasePath();
+    final databasePath = await _getDatabasePath();
+    final file = File(databasePath);
 
-    await deleteDatabase(databasePath);
+    await file.delete();
   }
 
   Future<String> _getDatabasePath() async {
-    String databasePath = await getDatabasesPath();
+    final documentDirectory = await getApplicationDocumentsDirectory();
 
-    return join(databasePath, 'nhk-easy.db');
-  }
-
-  void _executeScript(Database db) {
-    final batch = db.batch();
-    batch.execute(
-        'CREATE TABLE IF NOT EXISTS config(id INTEGER PRIMARY KEY, newsFetchedStartUtc TEXT, newsFetchedEndUtc TEXT)');
-    batch.execute(
-        'CREATE TABLE IF NOT EXISTS news(newsId TEXT PRIMARY KEY, title TEXT, titleWithRuby TEXT, body TEXT, imageUrl TEXT, publishedAtUtc TEXT, publishedAtEpoch INTEGER, m3u8Url TEXT)');
-
-    batch.commit();
+    return join(documentDirectory.path, 'nhk.db');
   }
 }

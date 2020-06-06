@@ -1,37 +1,33 @@
 import 'package:nhk_easy/model/news.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sembast/sembast.dart';
 
 import 'base_repository.dart';
 
 class NewsRepository extends BaseRepository {
+  final _newsStore = stringMapStoreFactory.store('news');
+
   Future<List<News>> getNews(DateTime startDate, DateTime endDate) async {
     final database = await getDatabase();
-    final rows = await database.rawQuery(
-        'select * from news where publishedAtEpoch >= ? and publishedAtEpoch <= ?',
-        [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch]);
+    final finder = Finder(
+        filter: Filter.and([
+      Filter.greaterThanOrEquals(
+          'publishedAtEpoch', startDate.millisecondsSinceEpoch),
+      Filter.lessThanOrEquals(
+          'publishedAtEpoch', endDate.millisecondsSinceEpoch)
+    ]));
 
-    return List.generate(rows.length, (i) {
-      final row = rows[i];
-      final news = News();
-      news.newsId = row['newsId'];
-      news.title = row['title'];
-      news.titleWithRuby = row['titleWithRuby'];
-      news.body = row['body'];
-      news.imageUrl = row['imageUrl'];
-      news.publishedAtUtc = row['publishedAtUtc'];
-      news.publishedAtEpoch = row['publishedAtEpoch'];
-      news.m3u8Url = row['m3u8Url'];
+    final rows = await _newsStore.find(database, finder: finder);
 
-      return news;
-    });
+    return rows.map((n) {
+      return News.fromJson(n.value);
+    }).toList();
   }
 
   Future<void> saveAll(List<News> news) async {
     final database = await getDatabase();
 
-    news.forEach((n) {
-      database.insert('news', n.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    });
+    await Future.wait(news.map((n) async {
+      await _newsStore.record(n.newsId).put(database, n.toMap());
+    }));
   }
 }

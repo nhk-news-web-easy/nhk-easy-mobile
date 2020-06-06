@@ -1,11 +1,20 @@
 class Config {
-  final int id;
+  int id;
 
-  final String newsFetchedStartUtc;
+  String newsFetchedStartUtc;
 
-  final String newsFetchedEndUtc;
+  String newsFetchedEndUtc;
 
   Config({this.id, this.newsFetchedStartUtc, this.newsFetchedEndUtc});
+
+  factory Config.fromJson(Map<String, dynamic> json) {
+    final config = Config();
+    config.id = json['id'];
+    config.newsFetchedStartUtc = json['newsFetchedStartUtc'];
+    config.newsFetchedEndUtc = json['newsFetchedEndUtc'];
+
+    return config;
+  }
 
   Map<String, dynamic> toMap() {
     return {

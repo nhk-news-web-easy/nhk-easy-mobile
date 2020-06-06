@@ -1,21 +1,18 @@
 import 'package:nhk_easy/model/config.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sembast/sembast.dart';
 
 import 'base_repository.dart';
 
 class ConfigRepository extends BaseRepository {
+  final _configStore = intMapStoreFactory.store('config');
+
   Future<List<Config>> getConfigs() async {
     final database = await getDatabase();
-    final rows = await database.query('config');
+    final snapshots = await _configStore.find(database);
 
-    return List.generate(rows.length, (i) {
-      final row = rows[i];
-
-      return Config(
-          id: row['id'],
-          newsFetchedStartUtc: row['newsFetchedStartUtc'],
-          newsFetchedEndUtc: row['newsFetchedEndUtc']);
-    });
+    return snapshots.map((snapshot) {
+      return Config.fromJson(snapshot.value);
+    }).toList();
   }
 
   Future<Config> getConfig() async {
@@ -27,7 +24,6 @@ class ConfigRepository extends BaseRepository {
   Future<void> save(Config config) async {
     final database = await getDatabase();
 
-    await database.insert('config', config.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await _configStore.record(config.id).put(database, config.toMap());
   }
 }
