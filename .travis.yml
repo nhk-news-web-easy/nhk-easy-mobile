@@ -46,6 +46,7 @@ matrix:
         - brew install ideviceinstaller
         - brew install ios-deploy
         - git clone https://github.com/flutter/flutter.git -b stable --depth 1
+        - apt-get update -y && apt-get install -y libplist-dev
       script:
         - ./flutter/bin/flutter -v build ios --no-codesign
 
