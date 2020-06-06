@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsDetail extends StatefulWidget {
   final News news;
@@ -54,10 +54,11 @@ class NewsDetailState extends State<NewsDetail> {
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
-          child: WebView(
-              initialUrl: Uri.dataFromString(_buildHtml(news),
-                      mimeType: 'text/html', encoding: utf8)
-                  .toString()),
+          child: InAppWebView(
+            initialUrl: Uri.dataFromString(_buildHtml(news),
+                    mimeType: 'text/html', encoding: utf8)
+                .toString(),
+          ),
         ),
         floatingActionButton: _hasAudio()
             ? FloatingActionButton(

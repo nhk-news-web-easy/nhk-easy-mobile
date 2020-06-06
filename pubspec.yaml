@@ -24,7 +24,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   http: ^0.12.1
-  webview_flutter: ^0.3.22+1
   fluttertoast: ^4.0.1
   pull_to_refresh: ^1.5.8
   path: ^1.6.4
@@ -36,6 +35,7 @@ dependencies:
   cached_network_image: ^2.2.0+1
   sembast: ^2.4.4+1
   path_provider: ^1.6.10
+  flutter_inappwebview: ^3.3.0+3
 
 dev_dependencies:
   flutter_test:
