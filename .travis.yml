@@ -41,8 +41,8 @@ matrix:
       language: generic
       osx_image: xcode11.5
       before_script:
-        - apt update -y && apt install -y libplist-dev
         - brew update
+        - brew install libplist
         - brew install --HEAD libimobiledevice
         - brew install ideviceinstaller
         - brew install ios-deploy
