@@ -16,19 +16,20 @@ class NewsDetail extends StatefulWidget {
 }
 
 class NewsDetailState extends State<NewsDetail> {
-  News news;
-  AudioPlayer _audioPlayer;
+  News _news;
   bool _isPlaying = false;
+  AudioPlayer _audioPlayer;
+  InAppWebViewController _inAppWebViewController;
 
   @override
   void initState() {
     super.initState();
 
-    this.news = widget.news;
+    this._news = widget.news;
     _audioPlayer = AudioPlayer();
 
     if (_hasAudio()) {
-      _audioPlayer.setUrl(news.m3u8Url).catchError((error, stackTrace) {
+      _audioPlayer.setUrl(_news.m3u8Url).catchError((error, stackTrace) {
         ErrorReporter.reportError(error, stackTrace);
       });
     }
@@ -55,9 +56,33 @@ class NewsDetailState extends State<NewsDetail> {
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: InAppWebView(
-            initialUrl: Uri.dataFromString(_buildHtml(news),
+            initialUrl: Uri.dataFromString(_buildHtml(_news),
                     mimeType: 'text/html', encoding: utf8)
                 .toString(),
+            onWebViewCreated: (InAppWebViewController inAppWebViewController) {
+              setState(() {
+                this._inAppWebViewController = inAppWebViewController;
+              });
+
+              inAppWebViewController.addJavaScriptHandler(
+                  handlerName: 'lookup',
+                  callback: (args) {
+                    print(args);
+                  });
+            },
+            onLoadStop:
+                (InAppWebViewController inAppWebViewController, String url) {
+              inAppWebViewController.injectJavascriptFileFromAsset(
+                  assetFilePath: 'assets/js/news-detail.js');
+            },
+            onConsoleMessage: (InAppWebViewController inAppWebViewController,
+                ConsoleMessage consoleMessage) {
+              print(consoleMessage.message);
+
+              if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
+                ErrorReporter.reportError(consoleMessage.message, null);
+              }
+            },
           ),
         ),
         floatingActionButton: _hasAudio()
@@ -107,6 +132,9 @@ class NewsDetailState extends State<NewsDetail> {
             img {
               max-width: 100%;
             }
+            .under {
+              text-decoration: underline #ff7f00;
+            }
           </style>
           $image
           <h1>${news.titleWithRuby}</h1>
@@ -117,6 +145,6 @@ class NewsDetailState extends State<NewsDetail> {
   }
 
   bool _hasAudio() {
-    return news.m3u8Url != null && news.m3u8Url != '';
+    return _news.m3u8Url != null && _news.m3u8Url != '';
   }
 }

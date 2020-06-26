@@ -71,13 +71,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
-  csslib:
-    dependency: transitive
-    description:
-      name: csslib
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.16.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -110,7 +103,7 @@ packages:
       name: flutter_inappwebview
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.0+3"
+    version: "3.4.0+2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -135,13 +128,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.5.0"
-  html:
-    dependency: transitive
-    description:
-      name: html
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.14.0+3"
   http:
     dependency: "direct main"
     description:
@@ -176,7 +162,7 @@ packages:
       name: just_audio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.10"
+    version: "0.2.2"
   matcher:
     dependency: transitive
     description:
@@ -211,7 +197,7 @@ packages:
       name: path_provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.6.10"
+    version: "1.6.11"
   path_provider_linux:
     dependency: transitive
     description:
@@ -288,7 +274,7 @@ packages:
       name: pull_to_refresh
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.5.8"
+    version: "1.6.0"
   quiver:
     dependency: transitive
     description:
@@ -309,7 +295,7 @@ packages:
       name: sembast
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.4+1"
+    version: "2.4.5"
   sentry:
     dependency: "direct main"
     description:
@@ -405,7 +391,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.4.10"
+    version: "5.4.11"
   url_launcher_macos:
     dependency: transitive
     description:
