@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/model/news.dart';
+import 'package:nhk_easy/model/word.dart';
+import 'package:nhk_easy/service/word_service.dart';
 
 class NewsDetail extends StatefulWidget {
   final News news;
@@ -19,7 +22,10 @@ class NewsDetailState extends State<NewsDetail> {
   News _news;
   bool _isPlaying = false;
   AudioPlayer _audioPlayer;
-  InAppWebViewController _inAppWebViewController;
+  bool _showDictionary = false;
+  Word _currentWord = null;
+  List<Word> _words = [];
+  WordService _wordService = WordService();
 
   @override
   void initState() {
@@ -33,6 +39,13 @@ class NewsDetailState extends State<NewsDetail> {
         ErrorReporter.reportError(error, stackTrace);
       });
     }
+
+    _wordService
+        .fetchWordList(this._news.newsId)
+        .then((words) => this._words = words)
+        .catchError((error, stackTrace) {
+      ErrorReporter.reportError(error, stackTrace);
+    });
   }
 
   @override
@@ -55,34 +68,76 @@ class NewsDetailState extends State<NewsDetail> {
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
-          child: InAppWebView(
-            initialUrl: Uri.dataFromString(_buildHtml(_news),
-                    mimeType: 'text/html', encoding: utf8)
-                .toString(),
-            onWebViewCreated: (InAppWebViewController inAppWebViewController) {
-              setState(() {
-                this._inAppWebViewController = inAppWebViewController;
-              });
+          child: Stack(
+            children: <Widget>[
+              InAppWebView(
+                initialUrl: Uri.dataFromString(_buildHtml(_news),
+                        mimeType: 'text/html', encoding: utf8)
+                    .toString(),
+                onWebViewCreated:
+                    (InAppWebViewController inAppWebViewController) {
+                  inAppWebViewController.addJavaScriptHandler(
+                      handlerName: 'lookup',
+                      callback: (args) {
+                        String wordId = args.length > 0 ? args[0] : null;
+                        Word word = _words.firstWhere(
+                            (word) => 'id-${word.idInNews}' == wordId);
 
-              inAppWebViewController.addJavaScriptHandler(
-                  handlerName: 'lookup',
-                  callback: (args) {
-                    print(args);
-                  });
-            },
-            onLoadStop:
-                (InAppWebViewController inAppWebViewController, String url) {
-              inAppWebViewController.injectJavascriptFileFromAsset(
-                  assetFilePath: 'assets/js/news-detail.js');
-            },
-            onConsoleMessage: (InAppWebViewController inAppWebViewController,
-                ConsoleMessage consoleMessage) {
-              print(consoleMessage.message);
+                        if (word != null) {
+                          setState(() {
+                            _currentWord = word;
+                            _showDictionary = true;
+                          });
+                        }
+                      });
+                },
+                onLoadStop: (InAppWebViewController inAppWebViewController,
+                    String url) {
+                  inAppWebViewController.injectJavascriptFileFromAsset(
+                      assetFilePath: 'assets/js/news-detail.js');
+                },
+                onConsoleMessage:
+                    (InAppWebViewController inAppWebViewController,
+                        ConsoleMessage consoleMessage) {
+                  print(consoleMessage.message);
 
-              if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
-                ErrorReporter.reportError(consoleMessage.message, null);
-              }
-            },
+                  if (consoleMessage.messageLevel ==
+                      ConsoleMessageLevel.ERROR) {
+                    ErrorReporter.reportError(consoleMessage.message, null);
+                  }
+                },
+              ),
+              Container(
+                child: _showDictionary
+                    ? Center(
+                        child: Card(
+                            child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              _buildWordDefinitions(_currentWord),
+                              ButtonBar(
+                                children: <Widget>[
+                                  FlatButton(
+                                    child: const Text('Close'),
+                                    onPressed: () {
+                                      setState(() {
+                                        _currentWord = null;
+                                        _showDictionary = false;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
+                      )
+                    : Container(),
+              )
+            ],
           ),
         ),
         floatingActionButton: _hasAudio()
@@ -146,5 +201,32 @@ class NewsDetailState extends State<NewsDetail> {
 
   bool _hasAudio() {
     return _news.m3u8Url != null && _news.m3u8Url != '';
+  }
+
+  Widget _buildWordDefinitions(Word word) {
+    if (word == null) {
+      return Container();
+    }
+
+    final definitions = word.definitions
+        .asMap()
+        .entries
+        .map((entry) => Text(
+              '${entry.key + 1}. ${entry.value.definition}',
+              style: TextStyle(fontSize: 16),
+            ))
+        .toList();
+
+    List<Widget> columns = [];
+    columns.add(Text(
+      word.name,
+      style: TextStyle(fontSize: 18),
+    ));
+    columns.addAll(definitions);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: columns,
+    );
   }
 }
