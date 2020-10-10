@@ -15,6 +15,12 @@ class BaseRepository {
 
   Future<void> dropDatabase() async {
     final databasePath = await _getDatabasePath();
+    final fileType = await FileSystemEntity.type(databasePath);
+
+    if (fileType == FileSystemEntityType.notFound) {
+      return;
+    }
+
     final file = File(databasePath);
 
     await file.delete();
