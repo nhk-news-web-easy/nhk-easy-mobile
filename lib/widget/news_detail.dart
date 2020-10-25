@@ -188,7 +188,10 @@ class NewsDetailState extends State<NewsDetail> {
               max-width: 100%;
             }
             .under {
-              text-decoration: underline #ff7f00;
+              text-decoration-line: underline;
+              -webkit-text-decoration-line: underline;
+              text-decoration-color: #ff7f00;
+              -webkit-text-decoration-color: #ff7f00;
             }
           </style>
           $image
