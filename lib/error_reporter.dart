@@ -3,7 +3,7 @@ import 'package:sentry/sentry.dart';
 
 class ErrorReporter {
   static final SentryClient _sentryClient =
-      SentryClient(dsn: GlobalConfiguration().getString('sentryDsn'));
+      SentryClient(dsn: GlobalConfiguration().getValue('sentryDsn'));
 
   static Future<void> reportError(dynamic error, dynamic stackTrace) async {
     final SentryResponse response = await _sentryClient.captureException(
