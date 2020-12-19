@@ -11,7 +11,7 @@ main() async {
   await GlobalConfiguration().loadFromAsset('config');
 
   runZoned<Future<void>>(() async {
-    runApp(MyApp());
+    runApp(NhkNewsEasy());
   }, onError: (error, stackTrace) {
     _reportError(error, stackTrace);
   });
@@ -41,7 +41,7 @@ bool get isInDebugMode {
   return inDebugMode;
 }
 
-class MyApp extends StatelessWidget {
+class NhkNewsEasy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
