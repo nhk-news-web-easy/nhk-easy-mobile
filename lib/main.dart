@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:nhk_easy/error_reporter.dart';
 import 'package:nhk_easy/widget/news_list.dart';
+import 'package:sentry/sentry.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await GlobalConfiguration().loadFromAsset('config');
+  await Sentry.init(
+    (options) {
+      options.dsn = GlobalConfiguration().getValue('sentryDsn');
+    },
+  );
 
   runZoned<Future<void>>(() async {
     runApp(NhkNewsEasy());
