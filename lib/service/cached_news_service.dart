@@ -15,7 +15,7 @@ class CachedNewsService {
   Future<List<News>> fetchNewsList(DateTime startDate, DateTime endDate) async {
     final config = await _configService.getConfig();
 
-    if (config != null && (_newsFetched(config, startDate, endDate))) {
+    if (config != null && (_newsCached(config, startDate, endDate))) {
       try {
         final news = await _newsRepository.getNews(startDate, endDate);
 
@@ -50,7 +50,7 @@ class CachedNewsService {
     }
   }
 
-  bool _newsFetched(Config config, DateTime startDate, DateTime endDate) {
+  bool _newsCached(Config config, DateTime startDate, DateTime endDate) {
     final newsFetchedStartDate = DateTime.parse(config.newsFetchedStartUtc);
     final newsFetchedEndDate = DateTime.parse(config.newsFetchedEndUtc);
 
