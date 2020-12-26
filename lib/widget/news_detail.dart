@@ -70,104 +70,19 @@ class NewsDetailState extends State<NewsDetail> {
           padding: EdgeInsets.all(16.0),
           child: Stack(
             children: <Widget>[
-              InAppWebView(
-                initialUrl: Uri.dataFromString(_buildHtml(_news),
-                        mimeType: 'text/html', encoding: utf8)
-                    .toString(),
-                onWebViewCreated:
-                    (InAppWebViewController inAppWebViewController) {
-                  inAppWebViewController.addJavaScriptHandler(
-                      handlerName: 'lookup',
-                      callback: (args) {
-                        String wordId = args.length > 0 ? args[0] : null;
-                        Word word = _words.firstWhere(
-                            (word) => 'id-${word.idInNews}' == wordId);
-
-                        if (word != null) {
-                          setState(() {
-                            _currentWord = word;
-                            _showDictionary = true;
-                          });
-                        }
-                      });
-                },
-                onLoadStop: (InAppWebViewController inAppWebViewController,
-                    String url) {
-                  inAppWebViewController.injectJavascriptFileFromAsset(
-                      assetFilePath: 'assets/js/news-detail.js');
-                },
-                onConsoleMessage:
-                    (InAppWebViewController inAppWebViewController,
-                        ConsoleMessage consoleMessage) {
-                  print(consoleMessage.message);
-
-                  if (consoleMessage.messageLevel ==
-                      ConsoleMessageLevel.ERROR) {
-                    ErrorReporter.reportError(consoleMessage.message, null);
-                  }
-                },
-              ),
+              _buildNewsBody(),
               Container(
-                child: _showDictionary
-                    ? Center(
-                        child: Card(
-                            child: Container(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              _buildWordDefinitions(_currentWord),
-                              ButtonBar(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: const Text('Close'),
-                                    onPressed: () {
-                                      setState(() {
-                                        _currentWord = null;
-                                        _showDictionary = false;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )),
-                      )
-                    : Container(),
+                child: _showDictionary ? _buildDictionary() : Container(),
               )
             ],
           ),
         ),
-        floatingActionButton: _hasAudio()
-            ? FloatingActionButton(
-                onPressed: () async {
-                  if (_audioPlayer.playbackState ==
-                          AudioPlaybackState.stopped ||
-                      _audioPlayer.playbackState == AudioPlaybackState.paused) {
-                    _audioPlayer.play().catchError((error, stackTrace) {
-                      ErrorReporter.reportError(error, stackTrace);
-                    });
-                  } else if (_audioPlayer.playbackState ==
-                      AudioPlaybackState.playing) {
-                    _audioPlayer.pause().catchError((error, stackTrace) {
-                      ErrorReporter.reportError(error, stackTrace);
-                    });
-                  }
-
-                  setState(() {
-                    _isPlaying = _audioPlayer.playbackState ==
-                        AudioPlaybackState.playing;
-                  });
-                },
-                child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow))
-            : Container(),
+        floatingActionButton: _hasAudio() ? _buildAudioPlayer() : Container(),
       ),
     );
   }
 
-  _buildHtml(News news) {
+  _buildNewsHtml(News news) {
     final image = news.imageUrl != '' ? '<img src=${news.imageUrl} />' : '';
 
     return """
@@ -206,6 +121,71 @@ class NewsDetailState extends State<NewsDetail> {
     return _news.m3u8Url != null && _news.m3u8Url != '';
   }
 
+  Widget _buildNewsBody() {
+    return InAppWebView(
+      initialUrl: Uri.dataFromString(_buildNewsHtml(_news),
+              mimeType: 'text/html', encoding: utf8)
+          .toString(),
+      onWebViewCreated: (InAppWebViewController inAppWebViewController) {
+        inAppWebViewController.addJavaScriptHandler(
+            handlerName: 'lookup',
+            callback: (args) {
+              String wordId = args.length > 0 ? args[0] : null;
+              Word word =
+                  _words.firstWhere((word) => 'id-${word.idInNews}' == wordId);
+
+              if (word != null) {
+                setState(() {
+                  _currentWord = word;
+                  _showDictionary = true;
+                });
+              }
+            });
+      },
+      onLoadStop: (InAppWebViewController inAppWebViewController, String url) {
+        inAppWebViewController.injectJavascriptFileFromAsset(
+            assetFilePath: 'assets/js/news-detail.js');
+      },
+      onConsoleMessage: (InAppWebViewController inAppWebViewController,
+          ConsoleMessage consoleMessage) {
+        print(consoleMessage.message);
+
+        if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
+          ErrorReporter.reportError(consoleMessage.message, null);
+        }
+      },
+    );
+  }
+
+  Widget _buildDictionary() {
+    return Center(
+      child: Card(
+          child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _buildWordDefinitions(_currentWord),
+            ButtonBar(
+              children: <Widget>[
+                FlatButton(
+                  child: const Text('Close'),
+                  onPressed: () {
+                    setState(() {
+                      _currentWord = null;
+                      _showDictionary = false;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      )),
+    );
+  }
+
   Widget _buildWordDefinitions(Word word) {
     if (word == null) {
       return Container();
@@ -231,5 +211,27 @@ class NewsDetailState extends State<NewsDetail> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: columns,
     );
+  }
+
+  Widget _buildAudioPlayer() {
+    return FloatingActionButton(
+        onPressed: () async {
+          if (_audioPlayer.playbackState == AudioPlaybackState.stopped ||
+              _audioPlayer.playbackState == AudioPlaybackState.paused) {
+            _audioPlayer.play().catchError((error, stackTrace) {
+              ErrorReporter.reportError(error, stackTrace);
+            });
+          } else if (_audioPlayer.playbackState == AudioPlaybackState.playing) {
+            _audioPlayer.pause().catchError((error, stackTrace) {
+              ErrorReporter.reportError(error, stackTrace);
+            });
+          }
+
+          setState(() {
+            _isPlaying =
+                _audioPlayer.playbackState == AudioPlaybackState.playing;
+          });
+        },
+        child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow));
   }
 }
