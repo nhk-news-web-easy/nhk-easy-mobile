@@ -20,6 +20,7 @@ class NewsListState extends State<NewsList> {
   final _cachedNewsService = CachedNewsService();
   final _newsList = List<News>();
   final _refreshController = RefreshController(initialRefresh: true);
+  final _newsFetchIntervalDays = 7;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class NewsListState extends State<NewsList> {
         ? (config != null
                 ? DateTime.parse(config.newsFetchedEndUtc)
                 : DateTime.now().toUtc())
-            .subtract(Duration(days: 7))
+            .subtract(Duration(days: _newsFetchIntervalDays))
         : DateTime.parse(latestNews.publishedAtUtc).add(new Duration(days: 1));
     DateTime startDate = DateTime.utc(
         newestDate.year, newestDate.month, newestDate.day, 0, 0, 0);
@@ -81,7 +82,7 @@ class NewsListState extends State<NewsList> {
         ? DateTime.parse(config.newsFetchedEndUtc)
         : DateTime.utc(
                 newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
-            .add(Duration(days: 7));
+            .add(Duration(days: _newsFetchIntervalDays));
 
     _cachedNewsService
         .fetchNewsList(startDate, endDate)
@@ -111,7 +112,7 @@ class NewsListState extends State<NewsList> {
             .subtract(new Duration(days: 1));
     DateTime startDate =
         DateTime.utc(oldestDate.year, oldestDate.month, oldestDate.day, 0, 0, 0)
-            .subtract(new Duration(days: 7));
+            .subtract(new Duration(days: _newsFetchIntervalDays));
     DateTime endDate = DateTime.utc(
         oldestDate.year, oldestDate.month, oldestDate.day, 23, 59, 59);
 
