@@ -96,6 +96,9 @@ class NewsDetailState extends State<NewsDetail> {
             * {
               font-size: 16px;
             }
+            h1 {
+              font-size: 20px;
+            }
             rt {
               font-size: 12px;
             }
