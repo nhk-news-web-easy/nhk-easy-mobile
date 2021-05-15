@@ -25,7 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   http: ^0.12.2
   fluttertoast: ^7.1.6
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: ^2.0.0
   path: ^1.6.4
   sentry: ^4.0.1
   global_configuration: ^1.6.0
