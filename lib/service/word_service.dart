@@ -16,7 +16,7 @@ class WordService {
 
       return wordList;
     } else {
-      throw Exception('Failed to fetch news');
+      throw Exception('Failed to fetch words');
     }
   }
 }
