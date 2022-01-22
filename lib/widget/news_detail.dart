@@ -22,7 +22,7 @@ class NewsDetailState extends State<NewsDetail> {
   bool _isPlaying = false;
   AudioPlayer _audioPlayer;
   bool _showDictionary = false;
-  Word _currentWord = null;
+  Word _currentWord;
   List<Word> _words = [];
   WordService _wordService = WordService();
 
@@ -171,7 +171,7 @@ class NewsDetailState extends State<NewsDetail> {
             _buildWordDefinitions(_currentWord),
             ButtonBar(
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   child: const Text('Close'),
                   onPressed: () {
                     setState(() {
