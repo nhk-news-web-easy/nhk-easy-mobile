@@ -17,21 +17,17 @@ class Settings extends StatelessWidget {
       body: SettingsList(
         sections: [
           SettingsSection(
-            title: 'Misc',
+            title: Text('Misc'),
             tiles: [
               SettingsTile(
-                title: 'Clear Cache',
+                title: Text('Clear Cache'),
                 leading: Icon(Icons.storage),
-                onTap: () {
-                  _clearCache(context);
-                },
+                onPressed: _clearCache,
               ),
               SettingsTile(
-                title: 'Privacy Policy',
+                title: Text('Privacy Policy'),
                 leading: Icon(Icons.description),
-                onTap: () {
-                  _openPrivacyPolicy(context);
-                },
+                onPressed: _openPrivacyPolicy,
               )
             ],
           )
@@ -42,7 +38,10 @@ class Settings extends StatelessWidget {
 
   void _clearCache(BuildContext context) {
     final yesButton = FlatButton(
-      child: Text('Yes'),
+      child: Text(
+        'Yes',
+        style: TextStyle(color: Colors.red),
+      ),
       onPressed: () {
         _baseRepository.dropDatabase().then((value) {
           Navigator.pop(context);
@@ -66,7 +65,7 @@ class Settings extends StatelessWidget {
       },
     );
     final alertDialog = AlertDialog(
-      content: Text('Are you sure to remove cache?'),
+      content: Text('Are you sure to clear cache? (This will remove all cached news.)'),
       actions: <Widget>[yesButton, noButton],
     );
 
