@@ -5,8 +5,12 @@ import 'package:nhk_easy/model/word.dart';
 
 class WordService {
   Future<List<Word>> fetchWordList(String newsId) async {
-    final response =
-        await http.get('https://nhk.dekiru.app/words?newsId=$newsId');
+    final uri = Uri(
+        scheme: 'https',
+        host: 'nhk.dekiru.app',
+        path: 'words',
+        queryParameters: {'newsId': newsId});
+    final response = await http.get(uri);
 
     if (response.statusCode == 200) {
       final decoder = Utf8Decoder();

@@ -18,11 +18,11 @@ class NewsDetail extends StatefulWidget {
 }
 
 class NewsDetailState extends State<NewsDetail> {
-  News _news;
+  News? _news;
   bool _isPlaying = false;
-  AudioPlayer _audioPlayer;
+  AudioPlayer? _audioPlayer;
   bool _showDictionary = false;
-  Word _currentWord;
+  Word? _currentWord;
   List<Word> _words = [];
   WordService _wordService = WordService();
 
@@ -34,13 +34,13 @@ class NewsDetailState extends State<NewsDetail> {
     _audioPlayer = AudioPlayer();
 
     if (_hasAudio()) {
-      _audioPlayer.setUrl(_news.m3u8Url).catchError((error, stackTrace) {
+      _audioPlayer?.setUrl(_news!.m3u8Url).catchError((error, stackTrace) {
         ErrorReporter.reportError(error, stackTrace);
       });
     }
 
     _wordService
-        .fetchWordList(this._news.newsId)
+        .fetchWordList(this._news!.newsId)
         .then((words) => this._words = words)
         .catchError((error, stackTrace) {
       ErrorReporter.reportError(error, stackTrace);
@@ -53,7 +53,7 @@ class NewsDetailState extends State<NewsDetail> {
       onWillPop: () async {
         if (_hasAudio()) {
           try {
-            await _audioPlayer.dispose();
+            await _audioPlayer?.dispose();
           } catch (error, stackTrace) {
             ErrorReporter.reportError(error, stackTrace);
           }
@@ -120,14 +120,14 @@ class NewsDetailState extends State<NewsDetail> {
   }
 
   bool _hasAudio() {
-    return _news.m3u8Url != null && _news.m3u8Url != '';
+    return _news?.m3u8Url != null && _news?.m3u8Url != '';
   }
 
   Widget _buildNewsBody() {
     return InAppWebView(
-      initialUrl: Uri.dataFromString(_buildNewsHtml(_news),
-              mimeType: 'text/html', encoding: utf8)
-          .toString(),
+      initialUrlRequest: URLRequest(
+          url: Uri.dataFromString(_buildNewsHtml(_news!),
+              mimeType: 'text/html', encoding: utf8)),
       onWebViewCreated: (InAppWebViewController inAppWebViewController) {
         inAppWebViewController.addJavaScriptHandler(
             handlerName: 'lookup',
@@ -144,7 +144,7 @@ class NewsDetailState extends State<NewsDetail> {
               }
             });
       },
-      onLoadStop: (InAppWebViewController inAppWebViewController, String url) {
+      onLoadStop: (InAppWebViewController inAppWebViewController, Uri? url) {
         inAppWebViewController.injectJavascriptFileFromAsset(
             assetFilePath: 'assets/js/news-detail.js');
       },
@@ -188,7 +188,7 @@ class NewsDetailState extends State<NewsDetail> {
     );
   }
 
-  Widget _buildWordDefinitions(Word word) {
+  Widget _buildWordDefinitions(Word? word) {
     if (word == null) {
       return Container();
     }
@@ -218,20 +218,18 @@ class NewsDetailState extends State<NewsDetail> {
   Widget _buildAudioPlayer() {
     return FloatingActionButton(
         onPressed: () async {
-          if (_audioPlayer.playbackState == AudioPlaybackState.stopped ||
-              _audioPlayer.playbackState == AudioPlaybackState.paused) {
-            _audioPlayer.play().catchError((error, stackTrace) {
+          if (_audioPlayer?.playing ?? false) {
+            _audioPlayer?.pause().catchError((error, stackTrace) {
               ErrorReporter.reportError(error, stackTrace);
             });
-          } else if (_audioPlayer.playbackState == AudioPlaybackState.playing) {
-            _audioPlayer.pause().catchError((error, stackTrace) {
+          } else {
+            _audioPlayer?.play().catchError((error, stackTrace) {
               ErrorReporter.reportError(error, stackTrace);
             });
           }
 
           setState(() {
-            _isPlaying =
-                _audioPlayer.playbackState == AudioPlaybackState.playing;
+            _isPlaying = _audioPlayer?.playing ?? false;
           });
         },
         child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow));

@@ -30,7 +30,7 @@ class CachedNewsService {
     } else {
       final news = await _newsService.fetchNewsList(startDate, endDate);
 
-      if (news == null || news.length == 0) {
+      if (news.length == 0) {
         return [];
       }
 
@@ -59,7 +59,7 @@ class CachedNewsService {
   }
 
   Config _createNewConfig(
-      Config config, String newsFetchedStartUtc, String newsFetchedEndUtc) {
+      Config? config, String newsFetchedStartUtc, String newsFetchedEndUtc) {
     if (config != null) {
       final newsFetchedStartUtcNew = DateTime.parse(newsFetchedStartUtc)
                   .compareTo(DateTime.parse(config.newsFetchedStartUtc)) <=

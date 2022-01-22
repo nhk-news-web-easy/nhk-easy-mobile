@@ -5,7 +5,7 @@ import 'package:nhk_easy/repository/config_repository.dart';
 class ConfigService {
   final _configRepository = ConfigRepository();
 
-  Future<Config> getConfig() async {
+  Future<Config?> getConfig() async {
     try {
       return await _configRepository.getConfig();
     } catch (error, stackTrace) {

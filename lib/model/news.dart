@@ -1,19 +1,19 @@
 class News {
-  String newsId;
+  String newsId = '';
 
-  String title;
+  String title = '';
 
-  String titleWithRuby;
+  String titleWithRuby = '';
 
-  String body;
+  String body = '';
 
-  String imageUrl;
+  String imageUrl = '';
 
-  String publishedAtUtc;
+  String publishedAtUtc = '';
 
-  int publishedAtEpoch;
+  int publishedAtEpoch = 0;
 
-  String m3u8Url;
+  String m3u8Url = '';
 
   News();
 

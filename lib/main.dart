@@ -1,18 +1,22 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:global_configuration/global_configuration.dart';
+import 'package:flutter/services.dart';
 import 'package:nhk_easy/error_reporter.dart';
+import 'package:nhk_easy/model/app_config.dart';
 import 'package:nhk_easy/widget/news_list.dart';
 import 'package:sentry/sentry.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GlobalConfiguration().loadFromAsset('config');
+  final config = await rootBundle.loadString('assets/cfg/config.json');
+  final appConfig = AppConfig.fromJson(json.decode(config));
+
   await Sentry.init(
     (options) {
-      options.dsn = GlobalConfiguration().getValue('sentryDsn');
+      options.dsn = appConfig.sentryDsn;
     },
   );
 
@@ -26,7 +30,8 @@ main() async {
     if (isInDebugMode) {
       FlutterError.dumpErrorToConsole(details);
     } else {
-      Zone.current.handleUncaughtError(details.exception, details.stack);
+      Zone.current.handleUncaughtError(
+          details.exception, details.stack ?? StackTrace.empty);
     }
   };
 }

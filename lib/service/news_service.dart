@@ -5,8 +5,15 @@ import 'package:nhk_easy/model/news.dart';
 
 class NewsService {
   Future<List<News>> fetchNewsList(DateTime startDate, DateTime endDate) async {
-    final response = await http.get(
-        'https://nhk.dekiru.app/news?startDate=${startDate.toIso8601String()}&endDate=${endDate.toIso8601String()}');
+    final uri = Uri(
+        scheme: 'https',
+        host: 'nhk.dekiru.app',
+        path: 'news',
+        queryParameters: {
+          'startDate': startDate.toIso8601String(),
+          'endDate': endDate.toIso8601String()
+        });
+    final response = await http.get(uri);
 
     if (response.statusCode == 200) {
       final decoder = Utf8Decoder();

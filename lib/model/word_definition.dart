@@ -1,7 +1,7 @@
 class WordDefinition {
-  String definition;
+  String definition = '';
 
-  String definitionWithRuby;
+  String definitionWithRuby = '';
 
   WordDefinition();
 

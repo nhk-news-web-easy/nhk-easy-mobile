@@ -18,7 +18,7 @@ class NewsList extends StatefulWidget {
 class NewsListState extends State<NewsList> {
   final _configService = ConfigService();
   final _cachedNewsService = CachedNewsService();
-  final _newsList = List<News>();
+  final _newsList = [];
   final _refreshController = RefreshController(initialRefresh: true);
   final _newsFetchIntervalDays = 7;
 
@@ -79,7 +79,7 @@ class NewsListState extends State<NewsList> {
     DateTime startDate = DateTime.utc(
         newestDate.year, newestDate.month, newestDate.day, 0, 0, 0);
     DateTime endDate = useConfigDate
-        ? DateTime.parse(config.newsFetchedEndUtc)
+        ? DateTime.parse(config?.newsFetchedEndUtc ?? '')
         : DateTime.utc(
                 newestDate.year, newestDate.month, newestDate.day, 23, 59, 59)
             .add(Duration(days: _newsFetchIntervalDays));

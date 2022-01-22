@@ -15,10 +15,10 @@ class ConfigRepository extends BaseRepository {
     }).toList();
   }
 
-  Future<Config> getConfig() async {
+  Future<Config?> getConfig() async {
     final configs = await getConfigs();
 
-    return (configs != null && configs.length > 0) ? configs.first : null;
+    return configs.length > 0 ? configs.first : null;
   }
 
   Future<void> save(Config config) async {

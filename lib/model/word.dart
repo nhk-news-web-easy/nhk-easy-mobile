@@ -1,11 +1,11 @@
 import 'package:nhk_easy/model/word_definition.dart';
 
 class Word {
-  String idInNews;
+  String idInNews = '';
 
-  String name;
+  String name = '';
 
-  List<WordDefinition> definitions;
+  List<WordDefinition> definitions = [];
 
   Word();
 
