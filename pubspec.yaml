@@ -1,5 +1,5 @@
 name: nhk_easy
-description: A new Flutter application.
+description: An unofficial client for NHK NEWS WEB EASY.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +11,7 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.1+12
+version: 1.5.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -22,12 +22,12 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  cupertino_icons: ^1.0.4
   http: ^0.13.4
   fluttertoast: ^8.0.8
   pull_to_refresh: ^2.0.0
-  path: ^1.6.4
-  sentry: ^4.0.1
+  path: ^1.8.0
+  sentry: ^6.2.2
   settings_ui: ^2.0.1
   url_launcher: ^6.0.18
   just_audio: ^0.9.18

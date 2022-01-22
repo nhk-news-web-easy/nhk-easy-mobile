@@ -323,7 +323,7 @@ packages:
       name: sentry
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0-nullsafety.1"
+    version: "6.2.2"
   settings_ui:
     dependency: "direct main"
     description:
