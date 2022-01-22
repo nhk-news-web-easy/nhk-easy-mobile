@@ -20,9 +20,9 @@ main() async {
     },
   );
 
-  runZoned<Future<void>>(() async {
+  runZonedGuarded(() async {
     runApp(NhkNewsEasy());
-  }, onError: (error, stackTrace) {
+  }, (error, stackTrace) {
     _reportError(error, stackTrace);
   });
 
