@@ -37,7 +37,7 @@ class Settings extends StatelessWidget {
   }
 
   void _clearCache(BuildContext context) {
-    final yesButton = FlatButton(
+    final yesButton = TextButton(
       child: Text(
         'Yes',
         style: TextStyle(color: Colors.red),
@@ -58,14 +58,15 @@ class Settings extends StatelessWidget {
         });
       },
     );
-    final noButton = FlatButton(
+    final noButton = TextButton(
       child: Text('No'),
       onPressed: () {
         Navigator.pop(context);
       },
     );
     final alertDialog = AlertDialog(
-      content: Text('Are you sure to clear cache? (This will remove all cached news.)'),
+      content: Text(
+          'Are you sure to clear cache? (This will remove all cached news.)'),
       actions: <Widget>[yesButton, noButton],
     );
 
@@ -83,7 +84,7 @@ class Settings extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      final okButton = FlatButton(
+      final okButton = TextButton(
         child: Text('Ok'),
         onPressed: () {
           Navigator.pop(context);
