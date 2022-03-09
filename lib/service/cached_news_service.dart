@@ -39,14 +39,12 @@ class CachedNewsService {
       final newConfig =
           _createNewConfig(config, newsFetchedStartUtc, newsFetchedEndUtc);
 
-      try {
-        _newsRepository.saveAll(news);
-        _configRepository.save(newConfig);
-      } catch (error, stackTrace) {
+      return Future.wait([
+        _newsRepository.saveAll(news),
+        _configRepository.save(newConfig)
+      ]).then((value) => news).catchError((error, stackTrace) {
         ErrorReporter.reportError(error, stackTrace);
-      }
-
-      return news;
+      });
     }
   }
 
