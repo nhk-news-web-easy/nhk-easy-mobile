@@ -80,7 +80,7 @@ class Settings extends StatelessWidget {
 
   void _openPrivacyPolicy(BuildContext context) async {
     final url = 'https://github.com/nhk-news-web-easy/nhk-easy-mobile-privacy-policy';
-    final uri = new Uri(scheme: 'https', host: 'github.com', path: '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
+    final uri = Uri.https('github.com', '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
 
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
