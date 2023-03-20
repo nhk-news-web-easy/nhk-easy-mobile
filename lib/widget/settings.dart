@@ -82,9 +82,9 @@ class Settings extends StatelessWidget {
     final url = 'https://github.com/nhk-news-web-easy/nhk-easy-mobile-privacy-policy';
     final uri = Uri.https('github.com', '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
 
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri);
-    } else {
+    } catch (e) {
       final okButton = TextButton(
         child: Text('Ok'),
         onPressed: () {
