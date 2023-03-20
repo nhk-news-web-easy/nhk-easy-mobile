@@ -80,9 +80,10 @@ class Settings extends StatelessWidget {
 
   void _openPrivacyPolicy(BuildContext context) async {
     final url = 'https://github.com/nhk-news-web-easy/nhk-easy-mobile-privacy-policy';
+    final uri = new Uri(scheme: 'https', host: 'github.com', path: '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       final okButton = TextButton(
         child: Text('Ok'),

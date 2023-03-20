@@ -134,9 +134,9 @@ class NewsDetailState extends State<NewsDetail> {
             callback: (args) {
               String wordId = args.length > 0 ? args[0] : null;
               Word word =
-                  _words.firstWhere((word) => 'id-${word.idInNews}' == wordId);
+                  _words.firstWhere((word) => word.idInNews == wordId, orElse: () => new Word());
 
-              if (word != null) {
+              if (word.name != '') {
                 setState(() {
                   _currentWord = word;
                   _showDictionary = true;
