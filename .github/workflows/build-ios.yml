@@ -1,0 +1,21 @@
+name: Build iOS
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.7.7'
+        channel: 'stable'
+        architecture: x64
+    - run: flutter --version
+    - run: flutter pub get
+    - run: flutter build ios --release --no-codesign
