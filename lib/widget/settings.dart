@@ -66,7 +66,7 @@ class Settings extends StatelessWidget {
     );
     final alertDialog = AlertDialog(
       content: Text(
-          'Are you sure to clear cache? (This will remove all cached news.)'),
+          'Are you sure to clear cached data?'),
       actions: <Widget>[yesButton, noButton],
     );
 
