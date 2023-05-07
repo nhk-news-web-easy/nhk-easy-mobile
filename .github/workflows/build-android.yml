@@ -27,5 +27,5 @@ jobs:
           channel: 'stable'
       - run: flutter --version
       - run: flutter pub get
-      - run: flutter -v build apk --debug
-      - run: flutter -v build appbundle --debug
+      - run: flutter build apk --debug
+      - run: flutter build appbundle --debug
