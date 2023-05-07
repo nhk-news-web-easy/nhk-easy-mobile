@@ -1,4 +1,4 @@
-# nhk-easy-mobile [![Build Status](https://travis-ci.org/Frederick-S/nhk-easy-mobile.svg?branch=master)](https://travis-ci.org/Frederick-S/nhk-easy-mobile)
+# nhk-easy-mobile [![Build Android](https://github.com/nhk-news-web-easy/nhk-easy-mobile/actions/workflows/build-android.yml/badge.svg?branch=master)](https://github.com/nhk-news-web-easy/nhk-easy-mobile/actions/workflows/build-android.yml)
 An unofficial client for [NHK NEWS WEB EASY](https://www3.nhk.or.jp/news/easy/).
 
 * [Google Play](https://play.google.com/store/apps/details?id=nhk.nhk_easy)
