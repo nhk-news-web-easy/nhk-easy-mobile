@@ -65,8 +65,7 @@ class Settings extends StatelessWidget {
       },
     );
     final alertDialog = AlertDialog(
-      content: Text(
-          'Are you sure to clear cached data?'),
+      content: Text('Are you sure to clear cached data?'),
       actions: <Widget>[yesButton, noButton],
     );
 
@@ -79,8 +78,10 @@ class Settings extends StatelessWidget {
   }
 
   void _openPrivacyPolicy(BuildContext context) async {
-    final url = 'https://github.com/nhk-news-web-easy/nhk-easy-mobile-privacy-policy';
-    final uri = Uri.https('github.com', '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
+    final url =
+        'https://github.com/nhk-news-web-easy/nhk-easy-mobile-privacy-policy';
+    final uri = Uri.https(
+        'github.com', '/nhk-news-web-easy/nhk-easy-mobile-privacy-policy');
 
     try {
       await launchUrl(uri);
