@@ -126,15 +126,15 @@ class NewsDetailState extends State<NewsDetail> {
   Widget _buildNewsBody() {
     return InAppWebView(
       initialUrlRequest: URLRequest(
-          url: Uri.dataFromString(_buildNewsHtml(_news!),
-              mimeType: 'text/html', encoding: utf8)),
+          url: WebUri.uri(Uri.dataFromString(_buildNewsHtml(_news!),
+              mimeType: 'text/html', encoding: utf8))),
       onWebViewCreated: (InAppWebViewController inAppWebViewController) {
         inAppWebViewController.addJavaScriptHandler(
             handlerName: 'lookup',
             callback: (args) {
               String wordId = args.length > 0 ? args[0] : null;
-              Word word =
-                  _words.firstWhere((word) => word.idInNews == wordId, orElse: () => new Word());
+              Word word = _words.firstWhere((word) => word.idInNews == wordId,
+                  orElse: () => new Word());
 
               if (word.name != '') {
                 setState(() {
