@@ -1,7 +1,7 @@
 # nhk-easy-mobile [![Build Android](https://github.com/nhk-news-web-easy/nhk-easy-mobile/actions/workflows/build-android.yml/badge.svg?branch=master)](https://github.com/nhk-news-web-easy/nhk-easy-mobile/actions/workflows/build-android.yml)
 An unofficial client for [NHK NEWS WEB EASY](https://www3.nhk.or.jp/news/easy/).
 
-* [Google Play](https://play.google.com/store/apps/details?id=nhk.nhk_easy)
+* ~~[Google Play](https://play.google.com/store/apps/details?id=nhk.nhk_easy)~~, **this will soon be removed by Google because I could not pass the developer verification**.
 
 ## Screenshots
 ![home](./screenshots/home.png)
