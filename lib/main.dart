@@ -14,11 +14,13 @@ main() async {
   final config = await rootBundle.loadString('assets/cfg/config.json');
   final appConfig = AppConfig.fromJson(json.decode(config));
 
-  await Sentry.init(
-    (options) {
-      options.dsn = appConfig.sentryDsn;
-    },
-  );
+  if (appConfig.sentryDsn.isNotEmpty) {
+    await Sentry.init(
+      (options) {
+        options.dsn = appConfig.sentryDsn;
+      },
+    );
+  }
 
   runZonedGuarded(() async {
     runApp(NhkNewsEasy());

@@ -20,7 +20,7 @@ class NewsListState extends State<NewsList> {
   final _cachedNewsService = CachedNewsService();
   final _newsList = [];
   final _refreshController = RefreshController(initialRefresh: true);
-  final _newsFetchIntervalDays = 7;
+  final _newsFetchIntervalDays = 14;
 
   @override
   Widget build(BuildContext context) {

@@ -124,10 +124,13 @@ class NewsDetailState extends State<NewsDetail> {
   }
 
   Widget _buildNewsBody() {
+    final Uri uri = Uri.dataFromString(_buildNewsHtml(_news!),
+        mimeType: 'text/html', encoding: utf8);
+    final WebUri webUri = WebUri.uri(uri);
+
     return InAppWebView(
       initialUrlRequest: URLRequest(
-          url: Uri.dataFromString(_buildNewsHtml(_news!),
-              mimeType: 'text/html', encoding: utf8)),
+          url: webUri),
       onWebViewCreated: (InAppWebViewController inAppWebViewController) {
         inAppWebViewController.addJavaScriptHandler(
             handlerName: 'lookup',
